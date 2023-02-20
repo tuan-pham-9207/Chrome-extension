@@ -7,7 +7,7 @@ export default class PaasPortalNotification extends EventTrigger {
     constructor() {
         super();
         this.totalDeploymentStep = 0;
-        this.interval = 1000 * 30; // 30s
+        this.interval = 1000 * 10; // 30s
         this.toolPrefix = "PaasPortalNotification";
     }
     protected ResetData(): void {

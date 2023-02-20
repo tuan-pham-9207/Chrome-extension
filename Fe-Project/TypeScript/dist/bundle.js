@@ -59,19 +59,21 @@ var EventTrigger = /** @class */ (function () {
     EventTrigger.prototype.RunNotifier = function (runAfterMiliseconds) {
         var _this = this;
         if (runAfterMiliseconds === void 0) { runAfterMiliseconds = 10; }
-        if (window.location.href.startsWith('https://store-site')) {
-            window.notifierCheckerId = setTimeout(function () { return __awaiter(_this, void 0, void 0, function () {
+        if (this.shouldRun()) {
+            this.notifierCheckerId = setTimeout(function () { return __awaiter(_this, void 0, void 0, function () {
                 return __generator(this, function (_a) {
-                    this.notifierTimes++;
-                    console.groupCollapsed();
-                    console.log("start notifier times ".concat(this.notifierTimes, " with reset times ").concat(this.resetTimes, " after"), runAfterMiliseconds, new Date());
-                    this.clearOldJob();
-                    new Notification('tititititititi', {
-                        body: "notification at ".concat(new Date().toLocaleTimeString())
-                    });
-                    // await this.notifier();
-                    console.groupEnd();
-                    return [2 /*return*/];
+                    switch (_a.label) {
+                        case 0:
+                            console.groupCollapsed();
+                            this.notifierTimes++;
+                            console.log("start notifier times ".concat(this.notifierTimes, "\n                 with reset times ").concat(this.resetTimes, " after ").concat(runAfterMiliseconds, ", \n                 jobid ").concat(this.notifierCheckerId), new Date());
+                            return [4 /*yield*/, this.notifier()];
+                        case 1:
+                            _a.sent();
+                            this.clearOldJob();
+                            console.groupEnd();
+                            return [2 /*return*/];
+                    }
                 });
             }); }, runAfterMiliseconds);
         }
@@ -87,10 +89,10 @@ var EventTrigger = /** @class */ (function () {
         return __awaiter(this, void 0, void 0, function () {
             var _this = this;
             return __generator(this, function (_a) {
-                // if (!this.shouldRun()) {
-                //     console.log(`wont run ${this.toolPrefix}`)
-                //     return;
-                // }
+                if (!this.shouldRun()) {
+                    console.log("wont run ".concat(this.toolPrefix));
+                    return [2 /*return*/];
+                }
                 this.RunNotifier();
                 setInterval(function () {
                     _this.ResetNotifier();
@@ -105,19 +107,20 @@ var EventTrigger = /** @class */ (function () {
                 this.resetTimes++;
                 this.clearOldJob();
                 this.ResetData();
-                this.RunNotifier(5 * 1000 * 60);
+                this.RunNotifier();
                 return [2 /*return*/];
             });
         });
     };
     EventTrigger.prototype.clearOldJob = function () {
-        clearTimeout(window.notifierCheckerId);
-        window.notifierCheckerId = undefined;
+        console.log('start clear old job', this.notifierCheckerId);
+        clearTimeout(this.notifierCheckerId);
+        this.notifierCheckerId = undefined;
     };
     EventTrigger.prototype.StopNofifier = function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
-                clearTimeout(window.notifierCheckerId);
+                clearTimeout(this.notifierCheckerId);
                 this.shouldStopNotice = true;
                 return [2 /*return*/];
             });
@@ -234,7 +237,7 @@ var PaasPortalNotification = /** @class */ (function (_super) {
     function PaasPortalNotification() {
         var _this = _super.call(this) || this;
         _this.totalDeploymentStep = 0;
-        _this.interval = 1000 * 30; // 30s
+        _this.interval = 1000 * 10; // 30s
         _this.toolPrefix = "PaasPortalNotification";
         return _this;
     }
@@ -588,11 +591,203 @@ var NotifierHelper = /** @class */ (function () {
 }());
 
 
+;// CONCATENATED MODULE: ./components/notifications/base-helper/helper.ts
+var helper_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var helper_generator = (undefined && undefined.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (g && (g = 0, op[0] && (_ = 0)), _) try {
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
+var Helper = /** @class */ (function () {
+    function Helper() {
+    }
+    Helper.delay = function (time) {
+        if (time === void 0) { time = 100; }
+        return helper_awaiter(this, void 0, void 0, function () {
+            return helper_generator(this, function (_a) {
+                return [2 /*return*/, new Promise(function (r) {
+                        setTimeout(function () {
+                            r(true);
+                        }, time);
+                    })];
+            });
+        });
+    };
+    Helper.waitForElementReady = function (elementGetter, intervalChecking, maxWaitCountTime) {
+        if (intervalChecking === void 0) { intervalChecking = 200; }
+        if (maxWaitCountTime === void 0) { maxWaitCountTime = 2000; }
+        return helper_awaiter(this, void 0, void 0, function () {
+            return helper_generator(this, function (_a) {
+                return [2 /*return*/, new Promise(function (resolve, reject) {
+                        var startWait = new Date();
+                        var intervalCheckId = setInterval(function () {
+                            var element = elementGetter();
+                            if (element) {
+                                resolve(element);
+                                clearInterval(intervalCheckId);
+                                return;
+                            }
+                            if (new Date() > startWait + maxWaitCountTime) {
+                                var errMessage = "wait time out after ".concat(maxWaitCountTime, " miliseconds");
+                                console.log(errMessage);
+                                clearInterval(intervalCheckId);
+                                throw new Error(errMessage);
+                            }
+                        }, intervalChecking);
+                    })];
+            });
+        });
+    };
+    return Helper;
+}());
+/* harmony default export */ const helper = (Helper);
+
+;// CONCATENATED MODULE: ./components/notifications/outlook/outlook-notification.ts
+var outlook_notification_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var outlook_notification_generator = (undefined && undefined.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (g && (g = 0, op[0] && (_ = 0)), _) try {
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
+
+var OutlookNotification = /** @class */ (function () {
+    /**
+     *
+     */
+    function OutlookNotification() {
+        this.toolPrefix = "OutlookNotification";
+    }
+    OutlookNotification.prototype.InjectEventTrigger = function () {
+        return outlook_notification_awaiter(this, void 0, void 0, function () {
+            var elementGetter, targetNode, config, callback, observer;
+            var _this = this;
+            return outlook_notification_generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (!window.location.href.startsWith('https://outlook.office.com/')) {
+                            console.log("outlook notification helper won't run on this domain");
+                            return [2 /*return*/];
+                        }
+                        elementGetter = function () {
+                            return document.querySelector('#fluent-default-layer-host [aria-live="polite"] div');
+                        };
+                        return [4 /*yield*/, helper.waitForElementReady(elementGetter)];
+                    case 1:
+                        targetNode = _a.sent();
+                        config = { childList: true, subtree: true };
+                        callback = function (mutationList, observer) {
+                            for (var _i = 0, mutationList_1 = mutationList; _i < mutationList_1.length; _i++) {
+                                var mutation = mutationList_1[_i];
+                                if (mutation.type === 'childList') {
+                                    mutation.addedNodes.forEach(function (addedChild) { return outlook_notification_awaiter(_this, void 0, void 0, function () {
+                                        var message, requestPermission;
+                                        return outlook_notification_generator(this, function (_a) {
+                                            switch (_a.label) {
+                                                case 0:
+                                                    message = addedChild.innerText;
+                                                    if (!(Notification.permission !== "granted")) return [3 /*break*/, 2];
+                                                    return [4 /*yield*/, Notification.requestPermission()];
+                                                case 1:
+                                                    requestPermission = _a.sent();
+                                                    if (requestPermission !== "granted") {
+                                                        alert("This page is not allowed notifications,notifier tool won't work");
+                                                        return [2 /*return*/];
+                                                    }
+                                                    _a.label = 2;
+                                                case 2:
+                                                    new Notification("Outlook notification helper", {
+                                                        body: message,
+                                                        icon: "https://lh3.googleusercontent.com/VykY8YriaQ4CeX5WAfu5jIgwBYMA9M-QFdkcYv8WmiNXrRp0ZtKPTxLa_olxSo7IlW-yBeClRPIdVFGwtgwOxvT1mIcEAXDaWyH27ctiRM4U53ivWipLG8YQxfCteaKfAXYYr2bA07ggxLuK-oX1XL6TxzxDbS08aMMQz9DU3fuKcAfD_8QMdhYPGL8DUUbVv2O_hUdoD7RVz7cLxYgxYkIYp2XAODUG31y1VevXV_1gDOVB-O3uHbcqPNd2Brnbm8EyDW_sLxyDSUGoD4tk7eKkewDtdeLiaqaWbtQNzG5P_jLwh7KEiVZml4dq9g5Yk4tscyjIgSvztgFo-WbVKX9edCc-TLhd6JgTPs6YPn0Ont2cbGoloAZ-VRGvTxJI_HlooOWjJiLW6KaTRBXrX13loNE3kNZRhqfbgTWswLnYglS8CR7rJksMafA8mAInsq4bCTKCj3Qv-ijG1i2WoyprJ7lHzT5ZgmQLsmjxALdLDnE50hbfhYUCftoY6wMl5ti9lZN_OxARdC5yBkOIfM6CwCjV2RO9nWsTIYYfNLHou2SneOC8G-5Ppobe_8OwcfoYbEXfG-M81B8yDIMPe5NbQRGZzCkJDp9aF0CUsyuTh7Q1vyljwRPbeA3a9VsH98NTyPHqa3hpnCHFuCWo1JNmo6vmcVb4YohiBg8iVaTX_HgqxzK3OCkvPMEMQly9LhVlFgrIoC75Id0wiDqQpAgk7toVlDncZFaiPlYzb5uS6hAZ6nwz1H7_SKAo6IsFvEFPuuQ5VNFeCOu2qshqkdo8pyC5yVMrrWi4tNTESDDYONMyfjyJPd67DWIGqDArsvQhd_GmOuC0XwhWc3GTKYN0RQhihmVkCzL-P2Jabm9BA6_d61c6I0fvHRjUnJ6DRneui5Y84IEjRkLZFCZpK2iYJ8OlonMJNHOf0uuQwDkx7u8Y=s328-no?authuser=0",
+                                                    });
+                                                    return [2 /*return*/];
+                                            }
+                                        });
+                                    }); });
+                                }
+                                else if (mutation.type === 'attributes') {
+                                    // console.log(`The ${mutation.attributeName} attribute was modified.`);
+                                }
+                            }
+                        };
+                        observer = new MutationObserver(callback);
+                        // Start observing the target node for configured mutations
+                        observer.observe(targetNode, config);
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    return OutlookNotification;
+}());
+/* harmony default export */ const outlook_notification = (OutlookNotification);
+
 ;// CONCATENATED MODULE: ./app-main.ts
+
 
 window.addEventListener('load', function () {
     setTimeout(function () {
         console.log('start version 3');
+        new outlook_notification().InjectEventTrigger();
         var notifierHelper = new NotifierHelper();
         notifierHelper.StartNotify();
     }, 1000);

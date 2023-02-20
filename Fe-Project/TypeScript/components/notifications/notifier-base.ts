@@ -20,19 +20,22 @@ export default abstract class EventTrigger {
     }
     protected abstract toolPrefix: string;
     private RunNotifier(runAfterMiliseconds = 10) {
-        let notifierCheckerId: NodeJS.Timeout = undefined;
-        if (window.location.href.startsWith('https://store-site')) {
-            notifierCheckerId = setTimeout(async () => {
+
+        if (this.shouldRun()) {
+            this.notifierCheckerId = setTimeout(async () => {
+                console.groupCollapsed();
 
                 this.notifierTimes++;
-                console.groupCollapsed();
-                console.log(`start notifier times ${this.notifierTimes} with reset times ${this.resetTimes} after`, runAfterMiliseconds, new Date())
-                clearTimeout(notifierCheckerId)
-                new Notification('tititititititi', {
-                    body: `notification at ${new Date().toLocaleTimeString()}`
-                })
-                // await this.notifier();
+
+                console.log(`start notifier times ${this.notifierTimes}
+                 with reset times ${this.resetTimes} after ${runAfterMiliseconds}, 
+                 jobid ${this.notifierCheckerId}`, new Date())
+
+                await this.notifier();
+                this.clearOldJob();
+
                 console.groupEnd();
+
             }, runAfterMiliseconds)
         } else {
             this.RemoveAll();
@@ -62,18 +65,19 @@ export default abstract class EventTrigger {
         this.resetTimes++;
         this.clearOldJob();
         this.ResetData();
-        this.RunNotifier(5 * 1000 * 60)
+        this.RunNotifier()
     }
 
     protected abstract ResetData(): void;
 
     protected clearOldJob() {
-        clearTimeout(window.notifierCheckerId);
-        window.notifierCheckerId = undefined;
+        console.log('start clear old job', this.notifierCheckerId)
+        clearTimeout(this.notifierCheckerId);
+        this.notifierCheckerId = undefined;
     }
 
     public async StopNofifier() {
-        clearTimeout(window.notifierCheckerId);
+        clearTimeout(this.notifierCheckerId);
         this.shouldStopNotice = true;
     }
 
