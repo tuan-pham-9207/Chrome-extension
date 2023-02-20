@@ -1,0 +1,24 @@
+{
+    "manifest_version": 3,
+    "name": "Notifier Tool",
+    "version": "3.0",
+    "description": "Notifiy if any update of page is sastify",
+    "content_scripts": [
+        {
+            "js": [
+                "scripts/notifier.js"
+            ],
+            "web_accessible_resources": [
+                "penguin.jpg"
+            ],
+            "matches": [
+                "https://developer.chrome.com/docs/extensions/*",
+                "https://developer.chrome.com/docs/webstore/*",
+                "https://*/*"
+            ]
+        }
+    ],
+    "background": {
+        "service_worker": "scripts/background.js"
+    }
+}
